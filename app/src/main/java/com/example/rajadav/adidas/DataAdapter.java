@@ -2,16 +2,17 @@ package com.example.rajadav.adidas;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterViewHolder> {
 
-    private String[] mActivityData;
+    private List<String> mData;
 
     private final DataAdapterOnClickHandler mClickHandler;
 
@@ -39,15 +40,15 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterVie
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            String activitydone = mActivityData[adapterPosition];
-            mClickHandler.onClick(activitydone);
+            String activityDone = mData.get(adapterPosition);
+            mClickHandler.onClick(activityDone);
         }
     }
 
 
     @Override
     public void onBindViewHolder(DataAdapterViewHolder dataAdapterViewHolder, int position){
-        String dataToShow = mActivityData[position];
+        String dataToShow = mData.get(position);
         dataAdapterViewHolder.mDataTextView.setText(dataToShow);
 
 
@@ -56,25 +57,22 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterVie
     @Override
     public DataAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.activity_list_item;
+        int layoutIdForListItem = R.layout.list_item_goal;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
+        //boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
         return new DataAdapterViewHolder(view);
 
     }
 
     @Override
     public int getItemCount() {
-        if(mActivityData == null){
-            return 0;
-        }
-        return mActivityData.length;
+        return mData == null ? 0 : mData.size();
     }
 
-    public void setWeatherData(String[] activityData) {
-        mActivityData = activityData;
+    public void setGoalData(List<String> activityData) {
+        mData = activityData;
         notifyDataSetChanged();
     }
 

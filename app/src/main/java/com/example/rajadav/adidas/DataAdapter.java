@@ -7,20 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.rajadav.adidas.database.Goal;
+
 import java.util.List;
 
 
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterViewHolder> {
 
-    private List<String> mData;
-
+    private List<Goal> mData;
     private final DataAdapterOnClickHandler mClickHandler;
 
-
     public interface DataAdapterOnClickHandler {
-
-        void onClick(String activitydone);
-
+        void onClick(Goal goal);
     }
 
     public DataAdapter(DataAdapterOnClickHandler clickHandler) {
@@ -40,18 +38,15 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterVie
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            String activityDone = mData.get(adapterPosition);
-            mClickHandler.onClick(activityDone);
+            mClickHandler.onClick(mData.get(adapterPosition));
         }
     }
 
 
     @Override
     public void onBindViewHolder(DataAdapterViewHolder dataAdapterViewHolder, int position){
-        String dataToShow = mData.get(position);
+        String dataToShow = mData.get(position).getTitle();
         dataAdapterViewHolder.mDataTextView.setText(dataToShow);
-
-
     }
 
     @Override
@@ -59,11 +54,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterVie
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.list_item_goal;
         LayoutInflater inflater = LayoutInflater.from(context);
-        //boolean shouldAttachToParentImmediately = false;
-
         View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
         return new DataAdapterViewHolder(view);
-
     }
 
     @Override
@@ -71,7 +63,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterVie
         return mData == null ? 0 : mData.size();
     }
 
-    public void setGoalData(List<String> activityData) {
+    public void setGoalData(List<Goal> activityData) {
         mData = activityData;
         notifyDataSetChanged();
     }

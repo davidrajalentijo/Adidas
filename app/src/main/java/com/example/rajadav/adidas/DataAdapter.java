@@ -12,6 +12,7 @@ import com.example.rajadav.adidas.database.Goal;
 import java.util.List;
 
 
+
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterViewHolder> {
 
     private List<Goal> mData;
@@ -67,5 +68,6 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterVie
         mData = activityData;
         notifyDataSetChanged();
     }
+
 
 }

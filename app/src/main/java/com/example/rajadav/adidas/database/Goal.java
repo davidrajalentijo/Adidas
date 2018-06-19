@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
 @Entity(tableName = "goal")
 public class Goal {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     @ColumnInfo(name = "id")
     @SerializedName("id")
     @Expose

@@ -13,6 +13,10 @@ public interface GoalDao {
     @Query("SELECT * FROM goal")
    LiveData<List<Goal>> loadAllGoal();
 
+    @Query("SELECT * FROM goal where id=:id")
+    LiveData<Goal> getOneGoal(int id);
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertGoals(List<Goal> goal);
 }

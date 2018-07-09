@@ -14,7 +14,14 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="22sp"
+            android:textStyle="bold"
             android:id="@+id/tv_passing_data"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textSize="22sp"
+            android:id="@+id/tv_passing_description"/>
         <ProgressBar
             android:id="@+id/goal_progressbar"
             style="@android:style/Widget.ProgressBar.Horizontal"

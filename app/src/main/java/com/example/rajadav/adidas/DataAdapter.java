@@ -2,6 +2,7 @@ package com.example.rajadav.adidas;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterViewHolder> {
 
     private List<Goal> mData;
+    private Goal mGoalData;
     private final DataAdapterOnClickHandler mClickHandler;
 
     public interface DataAdapterOnClickHandler {
@@ -42,10 +44,10 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterVie
             mClickHandler.onClick(mData.get(adapterPosition));
         }
     }
-
-
+    //SHOWING THE DATA IN THE MAIN ACTIVITY
     @Override
     public void onBindViewHolder(DataAdapterViewHolder dataAdapterViewHolder, int position){
+        int id = mData.get(position).getId();
         String dataToShow = mData.get(position).getTitle();
         dataAdapterViewHolder.mDataTextView.setText(dataToShow);
     }
@@ -68,6 +70,5 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterVie
         mData = activityData;
         notifyDataSetChanged();
     }
-
 
 }

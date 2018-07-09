@@ -1,7 +1,10 @@
 package com.example.rajadav.adidas;
 
 import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,29 +27,33 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity{
 
     private TextView mDisplayText;
+    private TextView mDisplayDescription;
     private ProgressBar mProgressBar;
+    private String DataRequired;
     public static final String LOG_TAG = "BasicHistoryApi";
-    private static final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 1;
+    private static final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         mDisplayText = (TextView) findViewById(R.id.tv_passing_data);
+        mDisplayDescription = (TextView) findViewById(R.id.tv_passing_description);
         mProgressBar = (ProgressBar) findViewById(R.id.goal_progressbar);
 
         FitnessOptions fitnessOptions = FitnessOptions.builder()
                 .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
                 .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+                .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
+                .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
                 .build();
 
         if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this), fitnessOptions)) {
@@ -59,19 +66,18 @@ public class DetailActivity extends AppCompatActivity {
             accessGoogleFit();
         }
 
+        ViewModelFactory factory = new ViewModelFactory(this);
+        MainViewModel model = ViewModelProviders.of(this, factory).get(MainViewModel.class);
+
         Intent intentThatStartedThisActivity = getIntent();
-        if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
-            String textEntered = intentThatStartedThisActivity.getStringExtra(Intent.EXTRA_TEXT);
-            switch (textEntered){
-                case "Easy walk steps": mProgressBar.setMax(500); break;
-                case "Medium walk steps": mProgressBar.setMax(1000); break ;
-                case "Hard walk steps": mProgressBar.setMax(60000); break ;
-                case "Walk some distance": mProgressBar.setMax(1000); break ;
-                case "Quick Run": mProgressBar.setMax(1000); break ;
-                case "Medium Run": mProgressBar.setMax(5000); break ;
-            }
-            mDisplayText.setText(textEntered);
-        }
+        int id = intentThatStartedThisActivity.getIntExtra("USER_ID", 0);
+
+        model.getGoalDetail(id).observe(this, data->{
+            DataRequired = data.getType();
+            mDisplayText.setText(data.getTitle());
+            mProgressBar.setMax(data.getGoal());
+            mDisplayDescription.setText(data.getDescription());
+        });
     }
 
     @Override
@@ -89,8 +95,10 @@ public class DetailActivity extends AppCompatActivity {
         long endTime = cal.getTimeInMillis();
         cal.add(Calendar.DAY_OF_WEEK, -1);
         long startTime = cal.getTimeInMillis();
+
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
+                .aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .bucketByTime(1, TimeUnit.DAYS)
                 .build();
@@ -98,7 +106,6 @@ public class DetailActivity extends AppCompatActivity {
         Fitness.getHistoryClient(this, GoogleSignIn.getLastSignedInAccount(this))
                 .readData(readRequest)
                 .addOnSuccessListener(new OnSuccessListener<DataReadResponse>() {
-
                     @Override
                     public void onSuccess(DataReadResponse dataReadResponse) {
                         Log.d(LOG_TAG, "onSuccess()");
@@ -106,13 +113,21 @@ public class DetailActivity extends AppCompatActivity {
                             for (Bucket bucket : dataReadResponse.getBuckets()){
                                 List<DataSet> dataSets = bucket.getDataSets();
                                 for (DataSet dataSet: dataSets){
-                                    showDataSet(dataSet);
+                                    switch (DataRequired){
+                                        case "step": if (dataSet.getDataType().getName().equals("com.google.step_count.delta")){ showStepsDataSet(dataSet);}break;
+                                        case "walking_distance":  if (dataSet.getDataType().getName().equals("com.google.distance.delta")){ showDistanceDataSet(dataSet);}; break ;
+                                        case "running_distance":  if (dataSet.getDataType().getName().equals("com.google.distance.delta")){ showDistanceDataSet(dataSet);}; break ;
+                                    }
                                 }
                             }
                         }
                         else if (dataReadResponse.getDataSets().size() > 0){
                             for (DataSet dataSet: dataReadResponse.getDataSets()){
-                                showDataSet(dataSet);
+                                switch (DataRequired){
+                                    case "step": if (dataSet.getDataType().getName().equals("com.google.step_count.delta")){ showStepsDataSet(dataSet);}break;
+                                    case "walking_distance":  if (dataSet.getDataType().getName().equals("com.google.distance.delta")){ showDistanceDataSet(dataSet);}; break ;
+                                    case "running_distance":  if (dataSet.getDataType().getName().equals("com.google.distance.delta")){ showDistanceDataSet(dataSet);}; break ;
+                                }
                             }
                         }
                     }
@@ -131,15 +146,22 @@ public class DetailActivity extends AppCompatActivity {
                 });
     }
 
-    private void showDataSet(DataSet dataSet) {
-
-        DateFormat dateFormat = DateFormat.getDateTimeInstance();
-
+    private void showStepsDataSet(DataSet dataSet) {
         for (DataPoint dp : dataSet.getDataPoints()) {
             for (Field field : dp.getDataType().getFields()) {
                 mProgressBar.setProgress(dp.getValue(field).asInt());
             }
         }
-
     }
+
+    private void showDistanceDataSet(DataSet dataSet) {
+        for (DataPoint dp : dataSet.getDataPoints()) {
+            for (Field field : dp.getDataType().getFields()) {
+                float a = dp.getValue(Field.FIELD_DISTANCE).asFloat();
+                int b = (int)Math.round(a);
+                mProgressBar.setProgress(b);
+            }
+        }
+    }
+
 }

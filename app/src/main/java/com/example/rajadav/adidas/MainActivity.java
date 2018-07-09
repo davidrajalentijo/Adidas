@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.TextView;
 import com.example.rajadav.adidas.database.Goal;
 
@@ -38,9 +39,8 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.DataA
 
     @Override
     public void onClick(Goal goal) {
-
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, goal.getTitle());
+        intent.putExtra("USER_ID", goal.getId());
         startActivity(intent);
     }
 }

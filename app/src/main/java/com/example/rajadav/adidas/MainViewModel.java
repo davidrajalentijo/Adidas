@@ -1,6 +1,5 @@
 package com.example.rajadav.adidas;
 
-
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
@@ -9,6 +8,7 @@ import com.example.rajadav.adidas.database.Goal;
 
 import java.util.List;
 
+//ViewModel to manage the list of goals and getting one goal by id
 public class MainViewModel extends ViewModel {
 
     private GoalsRepo goalRepo;

@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import com.example.rajadav.adidas.database.Goal;
 
-
+//Recieve a list of Goals and show the title of the goal
 public class MainActivity extends AppCompatActivity implements DataAdapter.DataAdapterOnClickHandler{
     private DataAdapter mDataAdapter;
     private RecyclerView mRecyclerView;

@@ -1,4 +1,5 @@
 package com.example.rajadav.adidas.database;
+
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
 import java.util.List;
@@ -8,6 +9,7 @@ public class Items {
     @SerializedName("items")
     @Expose
     private List<Goal> goals = null;
+
     @SerializedName("nextPageToken")
     @Expose
     private String nextPageToken;

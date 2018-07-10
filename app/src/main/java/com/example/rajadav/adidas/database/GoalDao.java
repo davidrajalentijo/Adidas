@@ -10,6 +10,7 @@ import java.util.List;
 
 @Dao
 public interface GoalDao {
+
     @Query("SELECT * FROM goal")
     LiveData<List<Goal>> loadAllGoal();
 

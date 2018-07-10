@@ -9,8 +9,6 @@ import android.arch.persistence.room.TypeConverters;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
 
-import java.util.List;
-
 @Entity(tableName = "goal")
 public class Goal {
     public static final String BRONZE_REWARD = "bronze_medal";

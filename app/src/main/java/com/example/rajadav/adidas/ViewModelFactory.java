@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.example.rajadav.adidas.database.AppDatabase;
 
+//instantiate MainViewModel
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private Context context;
 

@@ -4,9 +4,11 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
 
 public class Reward {
+
     @SerializedName("trophy")
     @Expose
     private String trophy;
+
     @SerializedName("points")
     @Expose
     private Integer points;

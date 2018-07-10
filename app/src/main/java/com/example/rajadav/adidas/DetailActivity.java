@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+//This Activity show one goal with detail and connect with Google Fit to receive the corresponding data
 public class DetailActivity extends AppCompatActivity {
     private static final String INTENT_TAG = "GOAL_ID";
     public static final String LOG_TAG = "DetailActivity";

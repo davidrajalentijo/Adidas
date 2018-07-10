@@ -2,7 +2,6 @@ package com.example.rajadav.adidas;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,9 @@ import com.example.rajadav.adidas.database.Goal;
 import java.util.List;
 
 
-
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterViewHolder> {
 
     private List<Goal> mData;
-    private Goal mGoalData;
     private final DataAdapterOnClickHandler mClickHandler;
 
     public interface DataAdapterOnClickHandler {
@@ -28,11 +25,11 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterVie
         mClickHandler = clickHandler;
     }
 
-    public class DataAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class DataAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final TextView mDataTextView;
 
-        public DataAdapterViewHolder (View view) {
+        public DataAdapterViewHolder(View view) {
             super(view);
             mDataTextView = (TextView) view.findViewById(R.id.tv_title_data);
             view.setOnClickListener(this);
@@ -44,9 +41,9 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterVie
             mClickHandler.onClick(mData.get(adapterPosition));
         }
     }
-    //SHOWING THE DATA IN THE MAIN ACTIVITY
+
     @Override
-    public void onBindViewHolder(DataAdapterViewHolder dataAdapterViewHolder, int position){
+    public void onBindViewHolder(DataAdapterViewHolder dataAdapterViewHolder, int position) {
         int id = mData.get(position).getId();
         String dataToShow = mData.get(position).getTitle();
         dataAdapterViewHolder.mDataTextView.setText(dataToShow);
@@ -70,5 +67,4 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataAdapterVie
         mData = activityData;
         notifyDataSetChanged();
     }
-
 }

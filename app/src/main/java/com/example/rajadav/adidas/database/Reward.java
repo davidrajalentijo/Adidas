@@ -1,6 +1,8 @@
 package com.example.rajadav.adidas.database;
+
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
+
 public class Reward {
     @SerializedName("trophy")
     @Expose

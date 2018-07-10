@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 import android.content.Context;
 
 
@@ -56,10 +57,10 @@ public class GoalsRepo {
         });
         return data;
     }
-    public LiveData<Goal> getGoalDetail(int goalid){
+
+    public LiveData<Goal> getGoalDetail(int goalid) {
         return mGoalDao.getOneGoal(goalid);
     }
-
 
 }
 

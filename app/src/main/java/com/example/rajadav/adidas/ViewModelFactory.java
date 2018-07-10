@@ -9,7 +9,6 @@ import com.example.rajadav.adidas.database.AppDatabase;
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private Context context;
 
-
     public ViewModelFactory(Context context) {
         this.context = context;
     }

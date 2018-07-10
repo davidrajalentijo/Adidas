@@ -2,16 +2,19 @@ package com.example.rajadav.adidas;
 
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.rajadav.adidas.database.Goal;
+import com.example.rajadav.adidas.database.Reward;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
@@ -32,22 +35,43 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class DetailActivity extends AppCompatActivity{
+public class DetailActivity extends AppCompatActivity {
+    private static final String INTENT_TAG = "GOAL_ID";
+    public static final String LOG_TAG = "DetailActivity";
+    private static final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 100;
 
     private TextView mDisplayText;
     private TextView mDisplayDescription;
+    private TextView mStatus;
+    private TextView mPoints;
     private ProgressBar mProgressBar;
-    private String DataRequired;
-    public static final String LOG_TAG = "BasicHistoryApi";
-    private static final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 100;
+    private ImageView mImageView;
+
+    private MainViewModel model;
+    private int mId;
+
+    public static Intent newIntent(Context context, int goalId) {
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.putExtra(INTENT_TAG, goalId);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        mDisplayText = (TextView) findViewById(R.id.tv_passing_data);
-        mDisplayDescription = (TextView) findViewById(R.id.tv_passing_description);
-        mProgressBar = (ProgressBar) findViewById(R.id.goal_progressbar);
+        mDisplayText = findViewById(R.id.tv_passing_data);
+        mDisplayDescription = findViewById(R.id.tv_passing_description);
+        mProgressBar = findViewById(R.id.goal_progressbar);
+        mImageView = findViewById(R.id.imageDisplay);
+        mStatus = findViewById(R.id.tv_status);
+        mPoints = findViewById(R.id.tv_points);
+
+        ViewModelFactory factory = new ViewModelFactory(this);
+        model = ViewModelProviders.of(this, factory).get(MainViewModel.class);
+
+        Intent intentThatStartedThisActivity = getIntent();
+        mId = intentThatStartedThisActivity.getIntExtra(INTENT_TAG, 0);
 
         FitnessOptions fitnessOptions = FitnessOptions.builder()
                 .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
@@ -63,20 +87,16 @@ public class DetailActivity extends AppCompatActivity{
                     GoogleSignIn.getLastSignedInAccount(this),
                     fitnessOptions);
         } else {
-            accessGoogleFit();
+            getGoal(mId);
         }
+    }
 
-        ViewModelFactory factory = new ViewModelFactory(this);
-        MainViewModel model = ViewModelProviders.of(this, factory).get(MainViewModel.class);
-
-        Intent intentThatStartedThisActivity = getIntent();
-        int id = intentThatStartedThisActivity.getIntExtra("USER_ID", 0);
-
-        model.getGoalDetail(id).observe(this, data->{
-            DataRequired = data.getType();
+    private void getGoal(int id) { ;
+        model.getGoalDetail(id).observe(this, data -> {
             mDisplayText.setText(data.getTitle());
             mProgressBar.setMax(data.getGoal());
             mDisplayDescription.setText(data.getDescription());
+            accessGoogleFit(data);
         });
     }
 
@@ -84,49 +104,53 @@ public class DetailActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
-                accessGoogleFit();
+                getGoal(mId);
             }
         }
     }
 
-    private void accessGoogleFit() {
+    private void accessGoogleFit(Goal goal) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         long endTime = cal.getTimeInMillis();
         cal.add(Calendar.DAY_OF_WEEK, -1);
         long startTime = cal.getTimeInMillis();
 
-        DataReadRequest readRequest = new DataReadRequest.Builder()
-                .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
-                .aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA)
+        DataReadRequest.Builder builder = new DataReadRequest.Builder()
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-                .bucketByTime(1, TimeUnit.DAYS)
-                .build();
+                .bucketByTime(1, TimeUnit.DAYS);
+
+        if (goal.getType().equals("step")) {
+            builder.aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA);
+        } else if (goal.getType().equals("walking_distance") || goal.getType().equals("running_distance")) {
+            builder.aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA);
+        }
 
         Fitness.getHistoryClient(this, GoogleSignIn.getLastSignedInAccount(this))
-                .readData(readRequest)
+                .readData(builder.build())
                 .addOnSuccessListener(new OnSuccessListener<DataReadResponse>() {
                     @Override
                     public void onSuccess(DataReadResponse dataReadResponse) {
                         Log.d(LOG_TAG, "onSuccess()");
-                        if (dataReadResponse.getBuckets().size() > 0){
-                            for (Bucket bucket : dataReadResponse.getBuckets()){
+                        if (dataReadResponse.getBuckets().size() > 0) {
+                            for (Bucket bucket : dataReadResponse.getBuckets()) {
                                 List<DataSet> dataSets = bucket.getDataSets();
-                                for (DataSet dataSet: dataSets){
-                                    switch (DataRequired){
-                                        case "step": if (dataSet.getDataType().getName().equals("com.google.step_count.delta")){ showStepsDataSet(dataSet);}break;
-                                        case "walking_distance":  if (dataSet.getDataType().getName().equals("com.google.distance.delta")){ showDistanceDataSet(dataSet);}; break ;
-                                        case "running_distance":  if (dataSet.getDataType().getName().equals("com.google.distance.delta")){ showDistanceDataSet(dataSet);}; break ;
+                                for (DataSet dataSet : dataSets) {
+                                    if (dataSet.getDataType().getName().equals("com.google.step_count.delta")) {
+                                        showStepsDataSet(goal.getReward(), dataSet);
+                                    }
+                                    else if(dataSet.getDataType().getName().equals("com.google.distance.delta")) {
+                                        showDistanceDataSet(goal.getReward(), dataSet);
                                     }
                                 }
                             }
-                        }
-                        else if (dataReadResponse.getDataSets().size() > 0){
-                            for (DataSet dataSet: dataReadResponse.getDataSets()){
-                                switch (DataRequired){
-                                    case "step": if (dataSet.getDataType().getName().equals("com.google.step_count.delta")){ showStepsDataSet(dataSet);}break;
-                                    case "walking_distance":  if (dataSet.getDataType().getName().equals("com.google.distance.delta")){ showDistanceDataSet(dataSet);}; break ;
-                                    case "running_distance":  if (dataSet.getDataType().getName().equals("com.google.distance.delta")){ showDistanceDataSet(dataSet);}; break ;
+                        } else if (dataReadResponse.getDataSets().size() > 0) {
+                            for (DataSet dataSet : dataReadResponse.getDataSets()) {
+                                if (dataSet.getDataType().getName().equals("com.google.step_count.delta")) {
+                                    showStepsDataSet(goal.getReward(), dataSet);
+                                }
+                                else if(dataSet.getDataType().getName().equals("com.google.distance.delta")) {
+                                    showDistanceDataSet(goal.getReward(), dataSet);
                                 }
                             }
                         }
@@ -146,21 +170,43 @@ public class DetailActivity extends AppCompatActivity{
                 });
     }
 
-    private void showStepsDataSet(DataSet dataSet) {
+    private void showStepsDataSet(Reward reward, DataSet dataSet) {
         for (DataPoint dp : dataSet.getDataPoints()) {
-            for (Field field : dp.getDataType().getFields()) {
-                mProgressBar.setProgress(dp.getValue(field).asInt());
-            }
+            mProgressBar.setProgress(dp.getValue(Field.FIELD_STEPS).asInt());
+            chekCompleteGoal(reward);
         }
     }
 
-    private void showDistanceDataSet(DataSet dataSet) {
+    private void showDistanceDataSet(Reward reward, DataSet dataSet) {
         for (DataPoint dp : dataSet.getDataPoints()) {
-            for (Field field : dp.getDataType().getFields()) {
-                float a = dp.getValue(Field.FIELD_DISTANCE).asFloat();
-                int b = (int)Math.round(a);
-                mProgressBar.setProgress(b);
+            float a = dp.getValue(Field.FIELD_DISTANCE).asFloat();
+            int b = Math.round(a);
+            mProgressBar.setProgress(b);
+            chekCompleteGoal(reward);
+        }
+    }
+
+    private void chekCompleteGoal(Reward reward) {
+        if (mProgressBar.getProgress() == mProgressBar.getMax()) {
+            mStatus.setVisibility(View.VISIBLE);
+            switch (reward.getTrophy()) {
+                case Goal.BRONZE_REWARD:
+                    mImageView.setImageResource(R.drawable.bronzemedal);
+                    break;
+                case Goal.SILVER_REWARD:
+                    mImageView.setImageResource(R.drawable.silvermedal);
+                    break;
+                case Goal.GOLD_REWARD:
+                    mImageView.setImageResource(R.drawable.goldmedal);
+                    break;
+                case Goal.ZOMBIE_REWARD:
+                    mImageView.setImageResource(R.drawable.if__zombie_rising_1573300);
+                    break;
             }
+            mPoints.setText(getResources().getString(R.string.detail_points_earned, reward.getPoints()));
+            mPoints.setVisibility(View.VISIBLE);
+        } else {
+            mStatus.setVisibility(View.INVISIBLE);
         }
     }
 

@@ -1,10 +1,11 @@
-package com.example.rajadav.adidas;
+package com.example.rajadav.adidas.ui;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 
-import com.example.rajadav.adidas.database.Goal;
+import com.example.rajadav.adidas.data.GoalsRepo;
+import com.example.rajadav.adidas.model.Goal;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public class MainViewModel extends ViewModel {
     public LiveData<Goal> getGoalDetail(int id) {
         return goalRepo.getGoalDetail(id);
     }
+
+    public void updateGoal(Goal goal){  goalRepo.updateGoal(goal);}
 }

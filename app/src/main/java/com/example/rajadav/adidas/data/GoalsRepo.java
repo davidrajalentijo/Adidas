@@ -1,12 +1,11 @@
-package com.example.rajadav.adidas;
+package com.example.rajadav.adidas.data;
 
 import android.arch.lifecycle.LiveData;
 
 import com.example.rajadav.adidas.database.AppDatabase;
-import com.example.rajadav.adidas.database.Goal;
+import com.example.rajadav.adidas.model.Goal;
 import com.example.rajadav.adidas.database.GoalDao;
-import com.example.rajadav.adidas.database.Items;
-import com.example.rajadav.adidas.database.Webservice;
+import com.example.rajadav.adidas.model.Items;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -66,6 +65,16 @@ public class GoalsRepo {
      */
     public LiveData<Goal> getGoalDetail(int goalid) {
         return mGoalDao.getOneGoal(goalid);
+    }
+
+    public void updateGoal(Goal goal) {
+
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                mGoalDao.updateGoal(goal);
+            }
+        });
     }
 
 }

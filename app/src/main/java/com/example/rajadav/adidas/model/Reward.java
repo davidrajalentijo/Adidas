@@ -1,4 +1,4 @@
-package com.example.rajadav.adidas.database;
+package com.example.rajadav.adidas.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;

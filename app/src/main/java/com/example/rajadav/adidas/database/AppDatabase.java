@@ -5,6 +5,8 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.example.rajadav.adidas.model.Goal;
+
 @Database(entities = {Goal.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase{
 

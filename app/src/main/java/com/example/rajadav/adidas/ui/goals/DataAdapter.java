@@ -1,4 +1,4 @@
-package com.example.rajadav.adidas;
+package com.example.rajadav.adidas.ui.goals;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,7 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.rajadav.adidas.database.Goal;
+import com.example.rajadav.adidas.R;
+import com.example.rajadav.adidas.model.Goal;
 
 import java.util.List;
 

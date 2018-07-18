@@ -1,10 +1,8 @@
-package com.example.rajadav.adidas;
+package com.example.rajadav.adidas.ui;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
-
-import com.example.rajadav.adidas.database.AppDatabase;
 
 //instantiate MainViewModel
 public class ViewModelFactory implements ViewModelProvider.Factory {

@@ -14,16 +14,12 @@ import com.example.rajadav.adidas.R;
 import com.example.rajadav.adidas.ui.ViewModelFactory;
 import com.example.rajadav.adidas.model.Goal;
 
+public class GoalFragment extends Fragment implements GoalAdapter.DataAdapterOnClickHandler {
 
-
-public class GoalFragment extends Fragment implements DataAdapter.DataAdapterOnClickHandler {
-
-    private DataAdapter mDataAdapter;
+    private GoalAdapter mGoalAdapter;
     private RecyclerView mRecyclerView;
 
-    public GoalFragment() {
-        // Required empty public constructor
-    }
+    public GoalFragment() { }
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -50,16 +46,15 @@ public class GoalFragment extends Fragment implements DataAdapter.DataAdapterOnC
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mDataAdapter = new DataAdapter(this);
-        mRecyclerView.setAdapter(mDataAdapter);
+        mGoalAdapter = new GoalAdapter(this);
+        mRecyclerView.setAdapter(mGoalAdapter);
 
         ViewModelFactory factory = new ViewModelFactory(getActivity().getApplicationContext());
         MainViewModel model = ViewModelProviders.of(this, factory).get(MainViewModel.class);
         model.getGoals().observe(this, data ->{
-            mDataAdapter.setGoalData(data);
+            mGoalAdapter.setGoalData(data);
         });
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_goal, container, false);
+
         return rootView;
     }
 

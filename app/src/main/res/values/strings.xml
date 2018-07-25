@@ -5,8 +5,6 @@
     <string name="detail_distance_done">You have done %1$d meters</string>
     <string name="tab_text_1">Goals</string>
     <string name="tab_text_2">Profile</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Profile Fragment</string>
-
+    <string name="total_points">Total points: %1$d</string>
+    <string name="today_points">Today points: %1$d</string>s
 </resources>

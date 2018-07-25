@@ -4,11 +4,15 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 
+import com.example.rajadav.adidas.database.DateConverter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
 
 @Entity(tableName = "goal")
+@TypeConverters({DateConverter.class})
+
 public class Goal {
     public static final String BRONZE_REWARD = "bronze_medal";
     public static final String SILVER_REWARD = "silver_medal";
@@ -127,4 +131,5 @@ public class Goal {
     public void setDistance(Integer distance) {
         this.distance = distance;
     }
+
 }

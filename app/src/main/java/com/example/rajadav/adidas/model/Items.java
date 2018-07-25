@@ -10,6 +10,10 @@ public class Items {
     @Expose
     private List<Goal> goals = null;
 
+    @SerializedName("itemsdone")
+    @Expose
+    private List<CompletedGoal> goalsdone = null;
+
     @SerializedName("nextPageToken")
     @Expose
     private String nextPageToken;
@@ -20,6 +24,14 @@ public class Items {
 
     public void setItems(List<Goal> goals) {
         this.goals = goals;
+    }
+
+    public List<CompletedGoal> getGoalsdone() {
+        return goalsdone;
+    }
+
+    public void setGoalsdone(List<CompletedGoal> goalsdone) {
+        this.goalsdone = goalsdone;
     }
 
     public String getNextPageToken() {

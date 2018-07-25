@@ -5,9 +5,10 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.example.rajadav.adidas.model.CompletedGoal;
 import com.example.rajadav.adidas.model.Goal;
 
-@Database(entities = {Goal.class}, version = 2, exportSchema = false)
+@Database(entities = {Goal.class, CompletedGoal.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase{
 
     private static final Object LOCK = new Object();

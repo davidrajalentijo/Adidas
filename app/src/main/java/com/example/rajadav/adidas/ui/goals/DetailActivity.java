@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.rajadav.adidas.model.CompletedGoal;
 import com.example.rajadav.adidas.ui.MainViewModel;
 import com.example.rajadav.adidas.R;
 import com.example.rajadav.adidas.ui.ViewModelFactory;
@@ -38,7 +39,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -108,9 +108,6 @@ public class DetailActivity extends AppCompatActivity {
 
     private void getGoal(int id) { ;
         model.getGoalDetail(id).observe(this, data -> {
-            Log.d("Observer", "Distance " + data.getDistance());
-            Log.d("Observer", "Steps " + data.getSteps());
-
             mDisplayText.setText(data.getTitle());
             mProgressBar.setMax(data.getGoal());
             mDisplayDescription.setText(data.getDescription());
@@ -160,8 +157,6 @@ public class DetailActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(List<DataSource> dataSources) {
                                 for (DataSource dataSource : dataSources) {
-
-                                    // Let's register a listener to receive Activity data!
                                     if (dataSource.getDataType().equals(DataType.TYPE_STEP_COUNT_DELTA)
                                          && mListener==null   && goal.getType().equals("step")) {
                                         Log.i(LOG_TAG, "Data source for STEPS found!  Registering.    "+ dataSource);
@@ -237,17 +232,12 @@ public class DetailActivity extends AppCompatActivity {
                 new OnDataPointListener() {
                     @Override
                     public void onDataPoint(DataPoint dataPoint) {
-
                         for (Field field : dataPoint.getDataType().getFields()) {
                             Value val = dataPoint.getValue(field);
-                            Log.d("checking", "DataType " + dataType.getName());
-                            Log.d("checking", "DataSource " + dataSource.getDataType().getName());
-
                             if (dataType.getName().equals("com.google.step_count.delta")){
-                            livesteps(val.asInt(), goal);
+                                livesteps(val.asInt(), goal);
                             }
                             else if (dataType.getName().equals("com.google.distance.delta")){
-                                Log.d("checking", "DataType " + val);
                                 float a = val.asFloat();
                                 int b = Math.round(a);
                                 livedistance(b, goal);
@@ -275,7 +265,6 @@ public class DetailActivity extends AppCompatActivity {
                                 }
                             }
                         });
-
         // [END register_data_listener]
     }
 
@@ -311,7 +300,6 @@ public class DetailActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         unregisterFitnessDataListener();
-
     }
 
     /*Method to show the steps done*/
@@ -321,7 +309,7 @@ public class DetailActivity extends AppCompatActivity {
 
             if (goal.getSteps() ==dp.getValue(Field.FIELD_STEPS).asInt()){
                 mProgressBar.setProgress(dp.getValue(Field.FIELD_STEPS).asInt());
-           }
+            }
             else{
                 goal.setSteps(dp.getValue(Field.FIELD_STEPS).asInt());
                 model.updateGoal(goal);
@@ -329,13 +317,12 @@ public class DetailActivity extends AppCompatActivity {
             }
 
             mSteps.setText(getResources().getString(R.string.detail_steps_done, dp.getValue(Field.FIELD_STEPS).asInt()));
-            chekCompleteGoal(reward);
+            chekCompleteGoal(goal, reward, dp.getValue(Field.FIELD_STEPS).asInt());
         }
     }
 
     /*Method to show the distance done*/
     private void showDistanceDataSet(Goal goal,Reward reward, DataSet dataSet) {
-
         for (DataPoint dp : dataSet.getDataPoints()) {
             float a = dp.getValue(Field.FIELD_DISTANCE).asFloat();
             int b = Math.round(a);
@@ -348,22 +335,15 @@ public class DetailActivity extends AppCompatActivity {
                 goal.setDistance(b);
                 model.updateGoal(goal);
                 mProgressBar.setProgress(b);
-                //mProgressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
             }
             mSteps.setText(getResources().getString(R.string.detail_distance_done, b));
-            chekCompleteGoal(reward);
-
+            chekCompleteGoal(goal, reward, b);
         }
-
     }
 
     /*Method to check if the goal is completed and show rewards*/
-    private void chekCompleteGoal(Reward reward) {
-
-        Date date = new Date();
-        String value = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG).format(date);
-
-        if (mProgressBar.getProgress() == mProgressBar.getMax()) {
+    private void chekCompleteGoal(Goal goal,Reward reward, int datadone) {
+        if (datadone >= goal.getGoal()) {
             mStatus.setVisibility(View.VISIBLE);
             switch (reward.getTrophy()) {
                 case Goal.BRONZE_REWARD:
@@ -379,9 +359,26 @@ public class DetailActivity extends AppCompatActivity {
                     mImageView.setImageResource(R.drawable.if__zombie_rising_1573300);
                     break;
             }
+
+            Calendar cal = Calendar.getInstance();
+            Date date = new Date();
+            CompletedGoal newCompleted = new CompletedGoal();
+            newCompleted.setGoalid(goal.getId());
+            newCompleted.setDay(cal.get(Calendar.DAY_OF_MONTH));
+            newCompleted.setMonth((cal.get(Calendar.MONTH ) + 1));
+            newCompleted.setYear(cal.get(Calendar.YEAR));
+            newCompleted.setTitle(goal.getTitle());
+            newCompleted.setPoints(reward.getPoints());
+            newCompleted.setTrophy(reward.getTrophy());
+            newCompleted.setHour(date.getHours());
+            newCompleted.setMinutes(date.getMinutes());
+            newCompleted.setSeconds(date.getSeconds());
+            model.insertGoalCompletedIfNotExist(newCompleted);
+
             mPoints.setText(getResources().getString(R.string.detail_points_earned, reward.getPoints()));
             mPoints.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else {
             mStatus.setVisibility(View.INVISIBLE);
         }
     }

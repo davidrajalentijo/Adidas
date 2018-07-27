@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailActivity">
+    tools:context=".ui.goals.DetailActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -19,16 +18,33 @@
                 android:id="@+id/tv_passing_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:padding="12dp"
+                android:textSize="36sp"
+                android:textColor="#00FF80"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_passing_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:textSize="22sp" />
+                android:padding="12dp"
+                android:textSize="22sp"/>
+
+            <TextView
+                android:id="@+id/tv_progress_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textSize="20sp"
+                android:textColor="#33FF99"
+                android:text="Progress: "/>
+
+            <TextView
+                android:id="@+id/tv_number_steps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textSize="18sp"/>
 
             <ProgressBar
                 android:id="@+id/goal_progressbar"
@@ -43,7 +59,7 @@
                 android:max="20000"
                 android:minHeight="50dp"
                 android:minWidth="350dp"
-                android:progress="75" />
+                android:progress="75"/>
 
             <TextView
                 android:id="@+id/tv_status"
@@ -52,14 +68,14 @@
                 android:padding="16dp"
                 android:text="Congratulations you completed the goal!"
                 android:textSize="20sp"
-                android:visibility="invisible" />
+                android:visibility="invisible"/>
 
             <ImageView
                 android:id="@+id/imageDisplay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@android:color/transparent" />
+                android:background="@android:color/transparent"
+                android:layout_width="100dp"
+                android:layout_height="100dp"/>
 
             <TextView
                 android:id="@+id/tv_points"
@@ -68,7 +84,8 @@
                 android:layout_gravity="center"
                 android:padding="16dp"
                 android:textSize="20sp"
-                android:visibility="invisible" />
+                android:visibility="invisible"/>
+
         </LinearLayout>
     </ScrollView>
 

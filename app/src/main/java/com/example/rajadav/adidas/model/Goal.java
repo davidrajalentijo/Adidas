@@ -1,4 +1,4 @@
-package com.example.rajadav.adidas.database;
+package com.example.rajadav.adidas.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Embedded;
@@ -6,10 +6,13 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 
+import com.example.rajadav.adidas.database.DateConverter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
 
 @Entity(tableName = "goal")
+@TypeConverters({DateConverter.class})
+
 public class Goal {
     public static final String BRONZE_REWARD = "bronze_medal";
     public static final String SILVER_REWARD = "silver_medal";
@@ -21,22 +24,36 @@ public class Goal {
     @SerializedName("id")
     @Expose
     private int id;
+
     @ColumnInfo(name = "title")
     @SerializedName("title")
     @Expose
     private String title;
+
     @ColumnInfo(name = "description")
     @SerializedName("description")
     @Expose
     private String description;
+
     @ColumnInfo(name = "type")
     @SerializedName("type")
     @Expose
     private String type;
+
     @ColumnInfo(name = "goal")
     @SerializedName("goal")
     @Expose
     private Integer goal;
+
+    @ColumnInfo(name = "steps")
+    @SerializedName("steps")
+    @Expose
+    private int steps;
+
+    @ColumnInfo(name = "distance")
+    @SerializedName("distance")
+    @Expose
+    private int distance;
 
     @Embedded
     private Reward reward;
@@ -47,6 +64,8 @@ public class Goal {
         this.description = description;
         this.type = type;
         this.goal = goal;
+        this.steps = 0;
+        distance = 0;
     }
 
     public int getId() {
@@ -96,4 +115,21 @@ public class Goal {
     public void setReward(Reward reward) {
         this.reward = reward;
     }
+
+    public Integer getSteps() {
+        return steps;
+    }
+
+    public void setSteps(Integer steps) {
+        this.steps = steps;
+    }
+
+    public Integer getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Integer distance) {
+        this.distance = distance;
+    }
+
 }

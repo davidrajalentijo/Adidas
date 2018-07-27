@@ -14,6 +14,7 @@ import com.example.rajadav.adidas.R;
 import com.example.rajadav.adidas.ui.ViewModelFactory;
 import com.example.rajadav.adidas.model.Goal;
 
+//Fragmente for the goals view where show all the goals
 public class GoalFragment extends Fragment implements GoalAdapter.DataAdapterOnClickHandler {
 
     private GoalAdapter mGoalAdapter;

@@ -11,7 +11,7 @@ import com.example.rajadav.adidas.model.SumPointsGoal;
 
 import java.util.List;
 
-//ViewModel to manage the list of goals and getting one goal by id
+//ViewModel to manage the list of goals, getting one goal by id, and others methods
 public class MainViewModel extends ViewModel {
 
     private GoalsRepo goalRepo;

@@ -69,8 +69,8 @@ public class GoalsRepo {
     }
 
     /*
-This method update a goal
- */
+    This method update a goal
+    */
     public void updateGoal(Goal goal) {
         executor.execute(new Runnable() {
             @Override
@@ -81,30 +81,30 @@ This method update a goal
     }
 
     /*
- This method return the total of Points achieved
-*/
+    This method return the total of Points achieved
+    */
     public LiveData<SumPointsGoal> getPoints() {
         return mGoalDao.loadAllPointsAchieved();
     }
 
     /*
- This method return the total of Points achieved today
-*/
+    This method return the total of Points achieved today
+    */
     public LiveData<SumPointsGoal> getDayPoints(int day, int month, int year) {
         return mGoalDao.getDayPoints(day,month, year);
     }
 
     /*
- This method return the list of all Goals achieved order by date
-*/
+    This method return the list of all Goals achieved order by date
+    */
     public LiveData<List<CompletedGoal>> getGoalsAchieved() {
         final LiveData<List<CompletedGoal>> data = mGoalDao.loadAllGoalsAchieved();
         return data;
     }
 
     /*
-This method insert a goal if its completed
-*/
+    This method insert a goal if its completed
+    */
     public void insertGoalCompletedIfNotExist(CompletedGoal goal) {
         executor.execute(new Runnable() {
             @Override

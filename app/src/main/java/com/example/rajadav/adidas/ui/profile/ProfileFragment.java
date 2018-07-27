@@ -18,6 +18,7 @@ import com.example.rajadav.adidas.ui.ViewModelFactory;
 
 import java.util.Calendar;
 
+//Fragment to show the goals completed
 public class ProfileFragment extends Fragment implements ProfileAdapter.DataAdapterOnClickHandler{
 
     private ProfileAdapter mProfileAdapter;

@@ -15,6 +15,7 @@ import com.example.rajadav.adidas.model.Goal;
 import java.text.DateFormat;
 import java.util.List;
 
+//Adapter to ProfileFragment to show the list of goals achieved
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.DataAdapterViewHolder>{
     private List<CompletedGoal> mData;
     private final ProfileAdapter.DataAdapterOnClickHandler mClickHandler;

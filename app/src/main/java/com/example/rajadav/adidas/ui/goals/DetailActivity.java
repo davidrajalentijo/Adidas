@@ -140,7 +140,6 @@ public class DetailActivity extends AppCompatActivity {
 
         if (goal.getType().equals("step")) {
             builder.aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA);
-
         } else if (goal.getType().equals("walking_distance") || goal.getType().equals("running_distance")) {
             builder.aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA);
         }
@@ -159,11 +158,9 @@ public class DetailActivity extends AppCompatActivity {
                                 for (DataSource dataSource : dataSources) {
                                     if (dataSource.getDataType().equals(DataType.TYPE_STEP_COUNT_DELTA)
                                          && mListener==null   && goal.getType().equals("step")) {
-                                        Log.i(LOG_TAG, "Data source for STEPS found!  Registering.    "+ dataSource);
                                         registerFitnessDataListener(dataSource, DataType.TYPE_STEP_COUNT_DELTA, goal);
                                     }
                                     else if (dataSource.getDataType().equals(DataType.TYPE_DISTANCE_DELTA) && mListener==null && (goal.getType().equals("walking_distance") || goal.getType().equals("running_distance"))){
-                                        Log.i(LOG_TAG, "Data source for DISTANCE found!  Registering.    "+ dataSource);
                                         registerFitnessDataListener(dataSource, DataType.TYPE_DISTANCE_DELTA, goal);
                                     }
                                 }
@@ -305,17 +302,13 @@ public class DetailActivity extends AppCompatActivity {
     /*Method to show the steps done*/
     private void showStepsDataSet(Goal goal,Reward reward, DataSet dataSet) {
 
+        if (dataSet.getDataPoints().size() == 0){
+            mProgressBar.setProgress(0);
+            mSteps.setText(getResources().getString(R.string.detail_steps_done, 0));
+        }
+
         for (DataPoint dp : dataSet.getDataPoints()) {
-
-            if (goal.getSteps() ==dp.getValue(Field.FIELD_STEPS).asInt()){
-                mProgressBar.setProgress(dp.getValue(Field.FIELD_STEPS).asInt());
-            }
-            else{
-                goal.setSteps(dp.getValue(Field.FIELD_STEPS).asInt());
-                model.updateGoal(goal);
-                mProgressBar.setProgress(dp.getValue(Field.FIELD_STEPS).asInt());
-            }
-
+            mProgressBar.setProgress(dp.getValue(Field.FIELD_STEPS).asInt());
             mSteps.setText(getResources().getString(R.string.detail_steps_done, dp.getValue(Field.FIELD_STEPS).asInt()));
             chekCompleteGoal(goal, reward, dp.getValue(Field.FIELD_STEPS).asInt());
         }
@@ -323,19 +316,16 @@ public class DetailActivity extends AppCompatActivity {
 
     /*Method to show the distance done*/
     private void showDistanceDataSet(Goal goal,Reward reward, DataSet dataSet) {
+
+        if (dataSet.getDataPoints().size() == 0){
+            mProgressBar.setProgress(0);
+            mSteps.setText(getResources().getString(R.string.detail_distance_done, 0));
+        }
+
         for (DataPoint dp : dataSet.getDataPoints()) {
             float a = dp.getValue(Field.FIELD_DISTANCE).asFloat();
             int b = Math.round(a);
-
-            if (goal.getDistance() == b){
-                mSteps.setText(getResources().getString(R.string.detail_distance_done, b));
-                mProgressBar.setProgress(b);
-            }
-            else{
-                goal.setDistance(b);
-                model.updateGoal(goal);
-                mProgressBar.setProgress(b);
-            }
+            mProgressBar.setProgress(b);
             mSteps.setText(getResources().getString(R.string.detail_distance_done, b));
             chekCompleteGoal(goal, reward, b);
         }
@@ -386,10 +376,10 @@ public class DetailActivity extends AppCompatActivity {
     /*Method to update the steps done*/
     private void livesteps(int value, Goal goal){
         int finalsteps = goal.getSteps() + value;
-            goal.setSteps(finalsteps);
-            model.updateGoal(goal);
-            mSteps.setText(getResources().getString(R.string.detail_steps_done, finalsteps));
-            mProgressBar.setProgress(finalsteps);
+        goal.setSteps(finalsteps);
+        model.updateGoal(goal);
+        mSteps.setText(getResources().getString(R.string.detail_steps_done, finalsteps));
+        mProgressBar.setProgress(finalsteps);
     }
 
     /*Method to update the distance done*/

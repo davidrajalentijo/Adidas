@@ -17,7 +17,7 @@ import com.example.rajadav.adidas.ui.goals.DetailActivity;
 import com.example.rajadav.adidas.ui.goals.GoalFragment;
 import com.example.rajadav.adidas.ui.profile.ProfileFragment;
 
-//Recieve a list of Goals and show the title of the goal
+//MainActivity to manage the GoalFragment and ProfileFragment
 public class MainActivity extends AppCompatActivity implements GoalAdapter.DataAdapterOnClickHandler{
 
     private ViewPager mViewPager;

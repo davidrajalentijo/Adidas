@@ -18,8 +18,10 @@ import java.util.concurrent.Executors;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 import android.content.Context;
 
+//This method implements retrofit to get the goals data
 public class GoalsRepo {
 
     public static final String BASE_URL = "https://thebigachallenge.appspot.com/_ah/api/myApi/v1/";
@@ -37,8 +39,12 @@ public class GoalsRepo {
         AppDatabase db = AppDatabase.getInstance(context);
         mGoalDao = db.goalDao();
         executor = Executors.newSingleThreadExecutor();
+
     }
 
+    /*
+     This method return the list of all Goals
+    */
     public LiveData<List<Goal>> getGoals() {
         final LiveData<List<Goal>> data = mGoalDao.loadAllGoal();
         executor.execute(new Runnable() {
@@ -54,6 +60,14 @@ public class GoalsRepo {
         });
         return data;
     }
+
+    /*
+    This method return one goal by a given value
+     */
+    public LiveData<Goal> getGoalDetail(int goalid) {
+        return mGoalDao.getOneGoal(goalid);
+    }
+
 }
 
 

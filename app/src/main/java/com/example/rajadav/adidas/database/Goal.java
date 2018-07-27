@@ -1,13 +1,21 @@
 package com.example.rajadav.adidas.database;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
+
 @Entity(tableName = "goal")
 public class Goal {
+    public static final String BRONZE_REWARD = "bronze_medal";
+    public static final String SILVER_REWARD = "silver_medal";
+    public static final String GOLD_REWARD = "gold_medal";
+    public static final String ZOMBIE_REWARD = "zombie_hand";
+
     @PrimaryKey()
     @ColumnInfo(name = "id")
     @SerializedName("id")
@@ -29,6 +37,9 @@ public class Goal {
     @SerializedName("goal")
     @Expose
     private Integer goal;
+
+    @Embedded
+    private Reward reward;
 
     public Goal(int id, String title, String description, String type, Integer goal) {
         this.id = id;
@@ -76,5 +87,13 @@ public class Goal {
 
     public void setGoal(Integer goal) {
         this.goal = goal;
+    }
+
+    public Reward getReward() {
+        return reward;
+    }
+
+    public void setReward(Reward reward) {
+        this.reward = reward;
     }
 }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Adidas</string>
+    <string name="detail_points_earned">You earned %1$d points</string>
 </resources>
